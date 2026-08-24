@@ -1,0 +1,56 @@
+name: Update Profile Stats
+
+# GeyuongGongPark/GeyuongGongPark 리포지토리의 .github/workflows/ 에 이 파일을 넣으세요.
+# 기본 브랜치가 main이 아니라면 README.md의 raw.githubusercontent.com 경로도 함께 수정해야 합니다.
+
+on:
+  schedule:
+    - cron: '0 0 * * *'   # 매일 UTC 00:00 (KST 09:00) 자동 실행
+  workflow_dispatch:        # Actions 탭에서 수동 실행(Run workflow) 가능
+
+permissions:
+  contents: write
+
+jobs:
+  update-stats:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 1) GitHub Stats + Top Languages (하나의 SVG로 합쳐서 생성)
+      - name: Generate GitHub stats & languages (user-statistician)
+        uses: cicirello/user-statistician@v1
+        with:
+          image-file: images/userstats.svg
+          colors: dark
+          commit-and-push: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # 2) GitHub Streak
+      - name: Generate streak stats
+        uses: be-next/github-streak-stats-action@v1
+        with:
+          username: ${{ github.repository_owner }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          output-path: profile/streak.svg
+          theme: tokyonight
+          hide-border: true
+
+      # 3) GitHub Trophies
+      - name: Generate trophy
+        uses: Erik-Donath/github-profile-trophy@feature/generate-svg
+        with:
+          username: ${{ github.repository_owner }}
+          output_path: profile/trophy.svg
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # 2), 3) 단계는 자체 커밋 기능이 없으므로 마지막에 한번에 커밋
+      - name: Commit and push generated files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add profile/*.svg
+          git diff --cached --quiet || git commit -m "chore: update profile stats"
+          git push
