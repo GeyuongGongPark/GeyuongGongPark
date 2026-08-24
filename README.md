@@ -15,7 +15,7 @@
 ## GitHub Streak
 
 <p align="center">
-  <a href="https://github.com/GeyuongGongPark"><img src="https://raw.githubusercontent.com/GeyuongGongPark/GeyuongGongPark/main/profile/streak.svg" alt="GitHub Streak" /></a>
+  <a href="https://github.com/GeyuongGongPark"><img src="https://github-readme-streak-stats-eight.vercel.app?user=GeyuongGongPark&theme=tokyonight&hide_border=true&date_format=Y.n.j" alt="GitHub Streak" /></a>
 </p>
 
 ---
@@ -76,12 +76,11 @@
 
 ## GitHub Stats
 
-<p align="center">
-  <a href="https://github.com/GeyuongGongPark"><img src="https://raw.githubusercontent.com/GeyuongGongPark/GeyuongGongPark/main/images/userstats.svg" alt="GeyuongGongPark's GitHub stats" /></a>
-</p>
+<table>
+<tr>
+<td><a href="https://github.com/GeyuongGongPark"><img src="https://github-stats-extended.vercel.app/api?username=GeyuongGongPark&show_icons=true&theme=tokyonight&hide_border=true&count_private=true" alt="GeyuongGongPark's GitHub stats" /></a></td>
+<td><a href="https://github.com/GeyuongGongPark"><img src="https://github-stats-extended.vercel.app/api/top-langs/?username=GeyuongGongPark&layout=compact&theme=tokyonight&hide_border=true" alt="Top Langs" /></a></td>
+</tr>
+</table>
 
-<p align="center">
-  <a href="https://github.com/GeyuongGongPark"><img src="https://raw.githubusercontent.com/GeyuongGongPark/GeyuongGongPark/main/profile/trophy.svg" alt="GitHub Trophies" /></a>
-</p>
-
-> Stats · Streak · Trophy 이미지는 매일 GitHub Actions가 직접 생성해 리포지토리에 커밋하는 방식(self-hosted)이라, 외부 무료 서버(vercel 공용 인스턴스)가 다운되어도 깨지지 않습니다. 아래 `.github/workflows/profile-stats.yml`을 리포에 추가하고 Actions 탭에서 한 번 수동 실행(`Run workflow`)하면 이미지가 처음 생성됩니다.
+[![GitHub Trophies](https://github-profile-trophy-liard-delta.vercel.app/?username=GeyuongGongPark&theme=tokyonight&no-frame=true&row=1&column=6)](https://github.com/GeyuongGongPark)
