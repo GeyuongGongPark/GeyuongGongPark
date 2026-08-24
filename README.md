@@ -72,8 +72,11 @@
 
 ## GitHub Stats
 
-[![GeyuongGongPark's GitHub stats](https://github-readme-stats.vercel.app/api?username=GeyuongGongPark&show_icons=true&theme=tokyonight&hide_border=true&count_private=true)](https://github.com/GeyuongGongPark)
+<table>
+<tr>
+<td><a href="https://github.com/GeyuongGongPark"><img src="https://github-stats-extended.vercel.app/api?username=GeyuongGongPark&show_icons=true&theme=tokyonight&hide_border=true&count_private=true" alt="GeyuongGongPark's GitHub stats" /></a></td>
+<td><a href="https://github.com/GeyuongGongPark"><img src="https://github-stats-extended.vercel.app/api/top-langs/?username=GeyuongGongPark&layout=compact&theme=tokyonight&hide_border=true" alt="Top Langs" /></a></td>
+</tr>
+</table>
 
-[![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=GeyuongGongPark&layout=compact&theme=tokyonight&hide_border=true)](https://github.com/GeyuongGongPark)
-
-[![GitHub Trophies](https://github-profile-trophy.vercel.app/?username=GeyuongGongPark&theme=tokyonight&no-frame=true&row=1&column=6)](https://github.com/GeyuongGongPark)
+[![GitHub Trophies](https://github-profile-trophy-liard-delta.vercel.app/?username=GeyuongGongPark&theme=tokyonight&no-frame=true&row=1&column=6)](https://github.com/GeyuongGongPark)
