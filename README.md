@@ -12,7 +12,7 @@
 
 💬 QA 문화, Shift Left, 품질 지표(Metrics)에 관심이 많습니다. 편하게 이슈나 DM 남겨주세요!
 
-[![GitHub Streak](https://streak-stats.demolab.com/?user=GeyuongGongPark&theme=tokyonight&hide_border=true&date_format=Y.n.j)](https://github.com/GeyuongGongPark)
+[![GitHub Streak](https://github-readme-streak-stats-eight.vercel.app?user=GeyuongGongPark&theme=tokyonight&hide_border=true&date_format=Y.n.j)](https://github.com/GeyuongGongPark)
 
 ---
 
