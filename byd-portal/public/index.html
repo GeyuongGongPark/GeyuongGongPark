@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BYD Open Ecosystem</title>
+  <title>BYD Third-Party Projects</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -212,6 +212,16 @@
       background: var(--surface2);
       border-radius: 12px;
       border: 1px solid var(--border);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .card-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 11px;
+      display: block;
     }
 
     .card-header {
@@ -304,6 +314,11 @@
       border-radius: 50%;
       background: #4ade80;
       box-shadow: 0 0 6px rgba(74,222,128,0.5);
+    }
+
+    .status-dot.paused::before {
+      background: #fbbf24;
+      box-shadow: 0 0 6px rgba(251,191,36,0.5);
     }
 
     .card-links {
@@ -432,11 +447,12 @@
 <nav>
   <div class="nav-brand">
     <span class="byd-badge">BYD</span>
-    Open Ecosystem
+    Third-Party Projects
   </div>
   <ul class="nav-links">
     <li><a href="#apple">Apple</a></li>
-    <li><a href="#android">Android</a></li>
+    <li><a href="#android">차량 (In-Car)</a></li>
+    <li><a href="#multi">멀티 플랫폼</a></li>
     <li><a href="#compat">호환 차종</a></li>
   </ul>
 </nav>
@@ -445,12 +461,12 @@
   <div class="hero-tag">Unofficial Third-Party Projects</div>
   <h1>BYD를 더<br /><span>스마트하게</span></h1>
   <p>
-    BYD 공식 앱에 없는 기능들. 자동 잠금부터 통계, 블랙박스까지.
+    BYD 공식 앱에 없는 기능들. 자동 잠금부터 통계, 블랙박스까지.<br />
     iPhone · Apple Watch · Android · HomeKit을 하나로.
   </p>
   <div class="hero-stats">
     <div class="stat">
-      <div class="stat-num">7</div>
+      <div class="stat-num">6</div>
       <div class="stat-label">오픈소스 프로젝트</div>
     </div>
     <div class="stat">
@@ -475,11 +491,10 @@
     <p>iPhone, Apple Watch, HomeKit, 위젯까지 — iOS 전반을 커버합니다.</p>
   </div>
 
-  <div class="platform-label">주요 앱</div>
   <div class="grid grid-wide" style="margin-bottom: 20px;">
 
     <div class="card">
-      <div class="card-icon">🔐</div>
+      <div class="card-icon"><img src="https://raw.githubusercontent.com/GeyuongGongPark/BydAutoLock-iOS/main/BydAutoLock/Assets.xcassets/AppIcon.appiconset/AppIcon_1024.png" alt="BYD AutoLock"></div>
       <div class="card-header">
         <div class="card-title-group">
           <h3>BYD AutoLock</h3>
@@ -532,7 +547,7 @@
         <div class="feature"><div class="feature-dot"></div>Circular · Rectangular · Corner Complication</div>
       </div>
       <div class="card-footer">
-        <span class="status-dot">활성 개발 중</span>
+        <span class="status-dot paused">개발 보류</span>
         <div class="card-links">
           <a class="card-link" href="https://geyuonggongpark.github.io/BYD-Watch/" target="_blank">랜딩 페이지 →</a>
           <a class="card-link card-link-gh" href="https://github.com/GeyuongGongPark/BYD-Watch" target="_blank">GitHub</a>
@@ -542,11 +557,10 @@
 
   </div>
 
-  <div class="platform-label">보조 앱 &amp; 플러그인</div>
   <div class="grid">
 
     <div class="card">
-      <div class="card-icon">🏠</div>
+      <div class="card-icon"><img src="https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/c1/e3/59/c1e35951-3630-2045-00da-2946295696c4/homeCalistoga-0-0-1x_U007epad-0-1-0-85-220.png/512x512bb.jpg" alt="Apple Home"></div>
       <div class="card-header">
         <div class="card-title-group">
           <h3>BYD HomeKit</h3>
@@ -573,43 +587,14 @@
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-icon">📊</div>
-      <div class="card-header">
-        <div class="card-title-group">
-          <h3>BYD Status</h3>
-          <div class="platform-badges">
-            <span class="badge badge-ios">iOS</span>
-            <span class="badge badge-widget">Widget</span>
-          </div>
-        </div>
-      </div>
-      <p class="card-desc">
-        배터리 이력, 충전 세션, 주행 효율, 충전 비용을 트래킹하는 iOS 통계 앱.
-        BYD 공식 앱에 없는 데이터 분석을 제공합니다.
-      </p>
-      <div class="features">
-        <div class="feature"><div class="feature-dot"></div>충전 세션 자동 감지 · kWh, 비용, 시간 기록</div>
-        <div class="feature"><div class="feature-dot"></div>7일 롤링 소비 그래프 (kWh/100km)</div>
-        <div class="feature"><div class="feature-dot"></div>배터리 이력 · 주행 효율 분석</div>
-      </div>
-      <div class="card-footer">
-        <span class="status-dot">개발 중</span>
-        <div class="card-links">
-          <a class="card-link" href="https://geyuonggongpark.github.io/BYDstatus/" target="_blank">랜딩 페이지 →</a>
-          <a class="card-link card-link-gh" href="https://github.com/GeyuongGongPark/BYDstatus" target="_blank">GitHub</a>
-        </div>
-      </div>
-    </div>
-
   </div>
 </section>
 
-<!-- ANDROID SECTION -->
+<!-- IN-CAR SECTION -->
 <section id="android">
   <div class="section-header">
-    <h2>Android 생태계</h2>
-    <p>차량 내 인포테인먼트(DiLink)와 스마트폰 모두를 지원합니다.</p>
+    <h2>차량 (In-Car)</h2>
+    <p>BYD 차량 인포테인먼트(DiLink) 전용 앱입니다.</p>
   </div>
 
   <div class="grid">
@@ -620,7 +605,7 @@
         <div class="card-title-group">
           <h3>BYD Launcher</h3>
           <div class="platform-badges">
-            <span class="badge badge-android">Android</span>
+            <span class="badge badge-android">Android (DiLink)</span>
           </div>
         </div>
       </div>
@@ -643,19 +628,63 @@
       </div>
     </div>
 
+  </div>
+</section>
+
+<!-- MULTI PLATFORM SECTION -->
+<section id="multi">
+  <div class="section-header">
+    <h2>멀티 플랫폼</h2>
+    <p>iOS, Android, 차량(DiLink) 모두를 지원하는 크로스 플랫폼 앱입니다.</p>
+  </div>
+
+  <div class="grid">
+
     <div class="card">
-      <div class="card-icon">🎥</div>
+      <div class="card-icon"><img src="https://raw.githubusercontent.com/GeyuongGongPark/BYDstatus/main/BydStats/Resources/Assets.xcassets/AppIcon.appiconset/AppIcon-1024.png" alt="BYD Status"></div>
+      <div class="card-header">
+        <div class="card-title-group">
+          <h3>BYD Status</h3>
+          <div class="platform-badges">
+            <span class="badge badge-ios">iOS</span>
+            <span class="badge badge-android">Android</span>
+            <span class="badge badge-widget">Widget</span>
+          </div>
+        </div>
+      </div>
+      <p class="card-desc">
+        배터리 이력, 충전 세션, 주행 효율, 충전 비용을 트래킹하는 통계 앱.
+        iOS와 Android 모두 지원하며, BYD 공식 앱에 없는 데이터 분석을 제공합니다.
+      </p>
+      <div class="features">
+        <div class="feature"><div class="feature-dot"></div>충전 세션 자동 감지 · kWh, 비용, 시간 기록</div>
+        <div class="feature"><div class="feature-dot"></div>7일 롤링 소비 그래프 (kWh/100km)</div>
+        <div class="feature"><div class="feature-dot"></div>배터리 이력 · 주행 효율 분석</div>
+      </div>
+      <div class="card-footer">
+        <span class="status-dot">개발 중</span>
+        <div class="card-links">
+          <a class="card-link" href="https://geyuonggongpark.github.io/BYDstatus/" target="_blank">랜딩 페이지 →</a>
+          <a class="card-link card-link-gh" href="https://github.com/GeyuongGongPark/BYDstatus" target="_blank">GitHub</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-icon"><img src="https://raw.githubusercontent.com/GeyuongGongPark/BYDCameraRecorder/main/mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png" alt="BYD Camera Recorder"></div>
       <div class="card-header">
         <div class="card-title-group">
           <h3>BYD Camera Recorder</h3>
           <div class="platform-badges">
+            <span class="badge badge-android">Android (DiLink)</span>
+            <span class="badge badge-ios">iOS</span>
             <span class="badge badge-android">Android</span>
           </div>
         </div>
       </div>
       <p class="card-desc">
-        BYD 내장 AVM 카메라를 활용한 Android 블랙박스 앱.
-        4채널 360° 동시 녹화와 텔레메트리 오버레이를 지원합니다.
+        BYD 내장 AVM 카메라를 활용한 블랙박스 앱.
+        차량(DiLink), iOS, Android 모두 지원하며 4채널 360° 동시 녹화와 텔레메트리 오버레이를 제공합니다.
       </p>
       <div class="features">
         <div class="feature"><div class="feature-dot"></div>전/후/좌/우 4채널 H.264 동시 녹화</div>
@@ -668,34 +697,6 @@
         <div class="card-links">
           <a class="card-link" href="https://geyuonggongpark.github.io/BYDCameraRecorder/" target="_blank">랜딩 페이지 →</a>
           <a class="card-link card-link-gh" href="https://github.com/GeyuongGongPark/BYDCameraRecorder" target="_blank">GitHub</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-icon">⛺</div>
-      <div class="card-header">
-        <div class="card-title-group">
-          <h3>BYD Camp</h3>
-          <div class="platform-badges">
-            <span class="badge badge-android">Android (DiLink)</span>
-          </div>
-        </div>
-      </div>
-      <p class="card-desc">
-        공식 캠핑 모드가 없는 Atto 3, Dolphin 등을 위한 캠핑 모드 시뮬레이터.
-        차량 내 Android 앱으로 공조를 지속 유지합니다.
-      </p>
-      <div class="features">
-        <div class="feature"><div class="feature-dot"></div>28분마다 OPENAIR 재호출로 공조 유지</div>
-        <div class="feature"><div class="feature-dot"></div>배터리 임계값 감시 · 최대 지속 시간 제한</div>
-        <div class="feature"><div class="feature-dot"></div>차량 스피커/화면 알림 · Foreground Service</div>
-      </div>
-      <div class="card-footer">
-        <span class="status-dot">개발 중</span>
-        <div class="card-links">
-          <a class="card-link" href="https://geyuonggongpark.github.io/BYDCamp/" target="_blank">랜딩 페이지 →</a>
-          <a class="card-link card-link-gh" href="https://github.com/GeyuongGongPark/BYDCamp" target="_blank">GitHub</a>
         </div>
       </div>
     </div>
@@ -719,7 +720,6 @@
           <th>Watch</th>
           <th>Launcher</th>
           <th>Camera</th>
-          <th>Camp</th>
         </tr>
       </thead>
       <tbody>
@@ -729,31 +729,27 @@
           <td class="check">✓ 검증됨</td>
           <td class="check">✓ 검증됨</td>
           <td class="check">✓ 검증됨</td>
-          <td class="check">✓ 지원</td>
         </tr>
         <tr>
           <td><strong>BYD Seal</strong></td>
-          <td class="partial">△ 예상</td>
-          <td class="partial">△ 예상</td>
           <td class="check">✓ 검증됨</td>
+          <td class="partial">△ 예상</td>
           <td class="partial">△ 예상</td>
           <td class="partial">△ 예상</td>
         </tr>
         <tr>
           <td><strong>BYD Dolphin</strong></td>
-          <td class="partial">△ 예상</td>
-          <td class="partial">△ 예상</td>
           <td class="check">✓ 검증됨</td>
           <td class="partial">△ 예상</td>
-          <td class="check">✓ 지원</td>
+          <td class="partial">△ 예상</td>
+          <td class="partial">△ 예상</td>
         </tr>
         <tr>
           <td><strong>BYD Sealion 7</strong></td>
+          <td class="check">✓ 검증됨</td>
           <td class="partial">△ 예상</td>
           <td class="partial">△ 예상</td>
           <td class="partial">△ 예상</td>
-          <td class="partial">△ 예상</td>
-          <td class="no">— (자체 캠핑 모드)</td>
         </tr>
       </tbody>
     </table>
@@ -766,6 +762,9 @@
     이 프로젝트들은 BYD 자동차와 무관한 개인/오픈소스 프로젝트입니다.
     공식 BYD 제품이 아니며, 사용에 따른 모든 책임은 사용자 본인에게 있습니다.
     차량 제어 기능은 신중하게 사용하세요.
+  </div>
+  <div class="disclaimer" style="margin-top: 8px;">
+    문의: <a href="mailto:parksilvester@gmail.com" style="color: #666; text-decoration: none;">parksilvester@gmail.com</a>
   </div>
 </footer>
 
