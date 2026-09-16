@@ -259,6 +259,7 @@
     .badge-android { color: #4ade80; border-color: rgba(74,222,128,0.3); background: rgba(74,222,128,0.08); }
     .badge-homebridge { color: #fb923c; border-color: rgba(251,146,60,0.3); background: rgba(251,146,60,0.08); }
     .badge-widget { color: #fbbf24; border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.08); }
+    .badge-new { color: #fff; border-color: var(--byd-red); background: var(--byd-red); letter-spacing: 0.08em; }
 
     .card-desc {
       font-size: 0.9rem;
@@ -319,6 +320,11 @@
     .status-dot.paused::before {
       background: #fbbf24;
       box-shadow: 0 0 6px rgba(251,191,36,0.5);
+    }
+
+    .status-dot.planning::before {
+      background: #60a5fa;
+      box-shadow: 0 0 6px rgba(96,165,250,0.5);
     }
 
     .card-links {
@@ -466,7 +472,7 @@
   </p>
   <div class="hero-stats">
     <div class="stat">
-      <div class="stat-num">6</div>
+      <div class="stat-num">7</div>
       <div class="stat-label">오픈소스 프로젝트</div>
     </div>
     <div class="stat">
@@ -697,6 +703,37 @@
         <div class="card-links">
           <a class="card-link" href="https://geyuonggongpark.github.io/BYDCameraRecorder/" target="_blank">랜딩 페이지 →</a>
           <a class="card-link card-link-gh" href="https://github.com/GeyuongGongPark/BYDCameraRecorder" target="_blank">GitHub</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">🩺</div>
+      <div class="card-header">
+        <div class="card-title-group">
+          <h3>BYD Health Monitor</h3>
+          <div class="platform-badges">
+            <span class="badge badge-new">NEW</span>
+            <span class="badge badge-android">Android (DiLink)</span>
+            <span class="badge badge-ios">iOS</span>
+            <span class="badge badge-android">Android</span>
+          </div>
+        </div>
+      </div>
+      <p class="card-desc">
+        고장 경고등 23종을 한국어로 번역하고 긴급도를 알려주는 차량 건강 앱.
+        차량(DiLink)에서 실시간 진단, 모바일에서 정비 이력과 상태를 확인합니다.
+      </p>
+      <div class="features">
+        <div class="feature"><div class="feature-dot"></div>고장 코드 23종 한국어 번역 · 긴급도(CRITICAL/WARNING/INFO) 분류</div>
+        <div class="feature"><div class="feature-dot"></div>4개 타이어 압력/온도/누출 상태 실시간 조감도 시각화</div>
+        <div class="feature"><div class="feature-dot"></div>엔진오일 · 브레이크액 · 냉각수 교체 주기 D-Day 추적</div>
+        <div class="feature"><div class="feature-dot"></div>정비 이력 로컬 기록 · 차량 전체 건강 점수 (0~100)</div>
+      </div>
+      <div class="card-footer">
+        <span class="status-dot planning">기획 중</span>
+        <div class="card-links">
+          <a class="card-link card-link-gh" href="https://github.com/GeyuongGongPark/BYD-Health-Monitor" target="_blank">GitHub</a>
         </div>
       </div>
     </div>
