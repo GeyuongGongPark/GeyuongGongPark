@@ -1,0 +1,13 @@
+{
+  "name": "byd-portal",
+  "version": "1.0.0",
+  "description": "BYD third-party ecosystem portal",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

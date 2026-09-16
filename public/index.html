@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BYD Open Ecosystem</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --byd-red: #E2001A;
+      --byd-red-dark: #b5001a;
+      --bg: #0a0a0a;
+      --surface: #111111;
+      --surface2: #1a1a1a;
+      --border: #222222;
+      --text: #f0f0f0;
+      --text-muted: #888;
+      --radius: 16px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      height: 60px;
+      background: rgba(10, 10, 10, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .byd-badge {
+      background: var(--byd-red);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.05em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    /* HERO */
+    .hero {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 100px 2rem 80px;
+      text-align: center;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--byd-red);
+      border: 1px solid rgba(226, 0, 26, 0.35);
+      padding: 5px 14px;
+      border-radius: 100px;
+      margin-bottom: 28px;
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+
+    h1 span { color: var(--byd-red); }
+
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 580px;
+      margin: 0 auto 40px;
+    }
+
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-top: 60px;
+      padding-top: 40px;
+      border-top: 1px solid var(--border);
+    }
+
+    .stat { text-align: center; }
+    .stat-num {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--byd-red);
+      letter-spacing: -0.03em;
+    }
+    .stat-label {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* SECTION */
+    section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 60px 2rem;
+    }
+
+    .section-header {
+      margin-bottom: 40px;
+    }
+
+    .section-header h2 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+    }
+
+    .section-header p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* GRID */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .grid-wide {
+      grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
+    }
+
+    /* CARD */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: border-color 0.2s, transform 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--byd-red), transparent);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .card:hover {
+      border-color: #333;
+      transform: translateY(-2px);
+    }
+
+    .card:hover::before { opacity: 1; }
+
+    .card-icon {
+      font-size: 2rem;
+      width: 52px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--surface2);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .card-title-group { flex: 1; }
+
+    .card h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 4px;
+    }
+
+    .platform-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .badge {
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 100px;
+      border: 1px solid;
+    }
+
+    .badge-ios { color: #58b6ff; border-color: rgba(88,182,255,0.3); background: rgba(88,182,255,0.08); }
+    .badge-watchos { color: #a78bfa; border-color: rgba(167,139,250,0.3); background: rgba(167,139,250,0.08); }
+    .badge-android { color: #4ade80; border-color: rgba(74,222,128,0.3); background: rgba(74,222,128,0.08); }
+    .badge-homebridge { color: #fb923c; border-color: rgba(251,146,60,0.3); background: rgba(251,146,60,0.08); }
+    .badge-widget { color: #fbbf24; border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.08); }
+
+    .card-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+      flex: 1;
+    }
+
+    .features {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 0.84rem;
+      color: var(--text-muted);
+    }
+
+    .feature-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--byd-red);
+      margin-top: 7px;
+      flex-shrink: 0;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      margin-top: auto;
+    }
+
+    .status-dot {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .status-dot::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #4ade80;
+      box-shadow: 0 0 6px rgba(74,222,128,0.5);
+    }
+
+    .card-link {
+      font-size: 0.82rem;
+      color: var(--byd-red);
+      text-decoration: none;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: gap 0.15s;
+    }
+
+    .card-link:hover { gap: 8px; }
+
+    /* PLATFORM SECTION */
+    .platform-section {
+      margin-bottom: 16px;
+    }
+
+    .platform-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .platform-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* COMPAT TABLE */
+    .compat-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+    }
+
+    .compat-section h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    th {
+      text-align: left;
+      padding: 8px 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    .check { color: #4ade80; font-weight: 700; }
+    .partial { color: #fbbf24; }
+    .no { color: var(--text-muted); }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 2rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    footer strong { color: var(--text); }
+
+    .disclaimer {
+      max-width: 600px;
+      margin: 12px auto 0;
+      font-size: 0.78rem;
+      line-height: 1.7;
+      color: #555;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .hero { padding: 60px 1.5rem 50px; }
+      .hero-stats { gap: 24px; }
+      .grid-wide { grid-template-columns: 1fr; }
+      section { padding: 40px 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">
+    <span class="byd-badge">BYD</span>
+    Open Ecosystem
+  </div>
+  <ul class="nav-links">
+    <li><a href="#apple">Apple</a></li>
+    <li><a href="#android">Android</a></li>
+    <li><a href="#compat">호환 차종</a></li>
+  </ul>
+</nav>
+
+<div class="hero">
+  <div class="hero-tag">Unofficial Third-Party Projects</div>
+  <h1>BYD를 더<br /><span>스마트하게</span></h1>
+  <p>
+    BYD 공식 앱에 없는 기능들. 자동 잠금부터 통계, 블랙박스까지.
+    iPhone · Apple Watch · Android · HomeKit을 하나로.
+  </p>
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">7</div>
+      <div class="stat-label">오픈소스 프로젝트</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">3</div>
+      <div class="stat-label">지원 플랫폼</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">15</div>
+      <div class="stat-label">지원 국가 서버</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">4+</div>
+      <div class="stat-label">호환 차종</div>
+    </div>
+  </div>
+</div>
+
+<!-- APPLE SECTION -->
+<section id="apple">
+  <div class="section-header">
+    <h2>Apple 생태계</h2>
+    <p>iPhone, Apple Watch, HomeKit, 위젯까지 — iOS 전반을 커버합니다.</p>
+  </div>
+
+  <div class="platform-label">주요 앱</div>
+  <div class="grid grid-wide" style="margin-bottom: 20px;">
+
+    <div class="card">
+      <div class="card-icon">🔐</div>
+      <div class="card-header">
+        <div class="card-title-group">
+          <h3>BYD AutoLock</h3>
+          <div class="platform-badges">
+            <span class="badge badge-ios">iOS</span>
+            <span class="badge badge-watchos">watchOS</span>
+            <span class="badge badge-widget">Widget</span>
+          </div>
+        </div>
+      </div>
+      <p class="card-desc">
+        BLE 신호 강도(RSSI)를 실시간으로 분석해 차에 가까워지면 자동으로 잠금을 해제하고,
+        멀어지면 자동으로 잠급니다. EMA 필터와 선형 회귀로 오작동 없이 안정적으로 동작합니다.
+      </p>
+      <div class="features">
+        <div class="feature"><div class="feature-dot"></div>BLE RSSI 기반 자동 잠금/해제 · 예측 선제 해제</div>
+        <div class="feature"><div class="feature-dot"></div>지오펜싱으로 불필요한 배터리 사용 차단</div>
+        <div class="feature"><div class="feature-dot"></div>에어컨 자동 제어 · 주차 위치 자동 저장</div>
+        <div class="feature"><div class="feature-dot"></div>잠금 화면 위젯 · Apple Watch 수동 제어</div>
+        <div class="feature"><div class="feature-dot"></div>15개 국가 서버 선택 · SQLite 디버그 로그</div>
+      </div>
+      <div class="card-footer">
+        <span class="status-dot">활성 개발 중</span>
+        <a class="card-link" href="https://github.com/GeyuongGongPark/BydAutoLock" target="_blank">GitHub →</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">⌚</div>
+      <div class="card-header">
+        <div class="card-title-group">
+          <h3>BYD Watch</h3>
+          <div class="platform-badges">
+            <span class="badge badge-watchos">watchOS</span>
+          </div>
+        </div>
+      </div>
+      <p class="card-desc">
+        Apple Watch 전용 독립형 BYD 차량 제어 앱. 폰 없이 손목에서 바로 잠금/해제,
+        에어컨 ON/OFF, 트렁크 열기, 차 찾기까지 가능합니다.
+      </p>
+      <div class="features">
+        <div class="feature"><div class="feature-dot"></div>잠금 / 해제 · 트렁크 열기 — Haptic 피드백</div>
+        <div class="feature"><div class="feature-dot"></div>에어컨 ON/OFF · 차 찾기(경광등+경적)</div>
+        <div class="feature"><div class="feature-dot"></div>배터리 %, 주행 가능 거리 실시간 표시</div>
+        <div class="feature"><div class="feature-dot"></div>타이어 압력 경고 Complication 자동 전환</div>
+        <div class="feature"><div class="feature-dot"></div>Circular · Rectangular · Corner Complication</div>
+      </div>
+      <div class="card-footer">
+        <span class="status-dot">활성 개발 중</span>
+        <a class="card-link" href="https://github.com/GeyuongGongPark/BYD-Watch" target="_blank">GitHub →</a>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="platform-label">보조 앱 &amp; 플러그인</div>
+  <div class="grid">
+
+    <div class="card">
+      <div class="card-icon">🏠</div>
+      <div class="card-header">
+        <div class="card-title-group">
+          <h3>BYD HomeKit</h3>
+          <div class="platform-badges">
+            <span class="badge badge-homebridge">Homebridge</span>
+          </div>
+        </div>
+      </div>
+      <p class="card-desc">
+        BYD 차량을 Apple HomeKit에 연동하는 Homebridge 플러그인.
+        홈 앱에서 차량 상태 확인과 자동화가 가능합니다.
+      </p>
+      <div class="features">
+        <div class="feature"><div class="feature-dot"></div>HomeKit 잠금 액세서리로 차량 잠금/해제</div>
+        <div class="feature"><div class="feature-dot"></div>배터리 서비스 — 홈 앱 배터리 % 표시</div>
+        <div class="feature"><div class="feature-dot"></div>위치 기반 자동화 (지역 이탈 시 잠금)</div>
+      </div>
+      <div class="card-footer">
+        <span class="status-dot">개발 중</span>
+        <a class="card-link" href="https://github.com/GeyuongGongPark/homebridge-byd" target="_blank">GitHub →</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">📊</div>
+      <div class="card-header">
+        <div class="card-title-group">
+          <h3>BYD Status</h3>
+          <div class="platform-badges">
+            <span class="badge badge-ios">iOS</span>
+            <span class="badge badge-widget">Widget</span>
+          </div>
+        </div>
+      </div>
+      <p class="card-desc">
+        배터리 이력, 충전 세션, 주행 효율, 충전 비용을 트래킹하는 iOS 통계 앱.
+        BYD 공식 앱에 없는 데이터 분석을 제공합니다.
+      </p>
+      <div class="features">
+        <div class="feature"><div class="feature-dot"></div>충전 세션 자동 감지 · kWh, 비용, 시간 기록</div>
+        <div class="feature"><div class="feature-dot"></div>7일 롤링 소비 그래프 (kWh/100km)</div>
+        <div class="feature"><div class="feature-dot"></div>배터리 이력 · 주행 효율 분석</div>
+      </div>
+      <div class="card-footer">
+        <span class="status-dot">개발 중</span>
+        <a class="card-link" href="https://github.com/GeyuongGongPark/BYDstatus" target="_blank">GitHub →</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ANDROID SECTION -->
+<section id="android">
+  <div class="section-header">
+    <h2>Android 생태계</h2>
+    <p>차량 내 인포테인먼트(DiLink)와 스마트폰 모두를 지원합니다.</p>
+  </div>
+
+  <div class="grid">
+
+    <div class="card">
+      <div class="card-icon">📱</div>
+      <div class="card-header">
+        <div class="card-title-group">
+          <h3>BYD Launcher</h3>
+          <div class="platform-badges">
+            <span class="badge badge-android">Android</span>
+          </div>
+        </div>
+      </div>
+      <p class="card-desc">
+        BYD 차량 인포테인먼트(DiLink 3.0/5.0, Android 9+)용 홈 런처.
+        회전 디스플레이, 날씨, 캘린더, 네비 연동을 하나에.
+      </p>
+      <div class="features">
+        <div class="feature"><div class="feature-dot"></div>회전 디스플레이 자동 Landscape/Portrait 전환</div>
+        <div class="feature"><div class="feature-dot"></div>위치 기반 날씨 (Open-Meteo, API Key 불필요)</div>
+        <div class="feature"><div class="feature-dot"></div>카카오맵 · T맵 · 네이버지도 · 구글맵 연동</div>
+        <div class="feature"><div class="feature-dot"></div>네비 오버레이 모드 · 캠핑 모드 내장</div>
+      </div>
+      <div class="card-footer">
+        <span class="status-dot">활성 개발 중</span>
+        <a class="card-link" href="https://github.com/GeyuongGongPark/BYDLauncher" target="_blank">GitHub →</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">🎥</div>
+      <div class="card-header">
+        <div class="card-title-group">
+          <h3>BYD Camera Recorder</h3>
+          <div class="platform-badges">
+            <span class="badge badge-android">Android</span>
+          </div>
+        </div>
+      </div>
+      <p class="card-desc">
+        BYD 내장 AVM 카메라를 활용한 Android 블랙박스 앱.
+        4채널 360° 동시 녹화와 텔레메트리 오버레이를 지원합니다.
+      </p>
+      <div class="features">
+        <div class="feature"><div class="feature-dot"></div>전/후/좌/우 4채널 H.264 동시 녹화</div>
+        <div class="feature"><div class="feature-dot"></div>속도 · 기어 · 방향지시등 텔레메트리 오버레이</div>
+        <div class="feature"><div class="feature-dot"></div>주차 감시 — 충격·모션 감지 자동 녹화</div>
+        <div class="feature"><div class="feature-dot"></div>Telegram 알림 · MQTT · Cloudflare 터널</div>
+      </div>
+      <div class="card-footer">
+        <span class="status-dot">활성 개발 중</span>
+        <a class="card-link" href="https://github.com/GeyuongGongPark/BYDCameraRecorder" target="_blank">GitHub →</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">⛺</div>
+      <div class="card-header">
+        <div class="card-title-group">
+          <h3>BYD Camp</h3>
+          <div class="platform-badges">
+            <span class="badge badge-android">Android (DiLink)</span>
+          </div>
+        </div>
+      </div>
+      <p class="card-desc">
+        공식 캠핑 모드가 없는 Atto 3, Dolphin 등을 위한 캠핑 모드 시뮬레이터.
+        차량 내 Android 앱으로 공조를 지속 유지합니다.
+      </p>
+      <div class="features">
+        <div class="feature"><div class="feature-dot"></div>28분마다 OPENAIR 재호출로 공조 유지</div>
+        <div class="feature"><div class="feature-dot"></div>배터리 임계값 감시 · 최대 지속 시간 제한</div>
+        <div class="feature"><div class="feature-dot"></div>차량 스피커/화면 알림 · Foreground Service</div>
+      </div>
+      <div class="card-footer">
+        <span class="status-dot">개발 중</span>
+        <a class="card-link" href="https://github.com/GeyuongGongPark/BYDCamp" target="_blank">GitHub →</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- COMPAT SECTION -->
+<section id="compat">
+  <div class="section-header">
+    <h2>호환 차종</h2>
+    <p>BYD Open API (OPENAIR)를 사용하는 차량이라면 대부분 동작합니다.</p>
+  </div>
+
+  <div class="compat-section">
+    <table>
+      <thead>
+        <tr>
+          <th>차종</th>
+          <th>AutoLock</th>
+          <th>Watch</th>
+          <th>Launcher</th>
+          <th>Camera</th>
+          <th>Camp</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>BYD Atto 3</strong></td>
+          <td class="check">✓ 검증됨</td>
+          <td class="check">✓ 검증됨</td>
+          <td class="check">✓ 검증됨</td>
+          <td class="check">✓ 검증됨</td>
+          <td class="check">✓ 지원</td>
+        </tr>
+        <tr>
+          <td><strong>BYD Seal</strong></td>
+          <td class="partial">△ 예상</td>
+          <td class="partial">△ 예상</td>
+          <td class="check">✓ 검증됨</td>
+          <td class="partial">△ 예상</td>
+          <td class="partial">△ 예상</td>
+        </tr>
+        <tr>
+          <td><strong>BYD Dolphin</strong></td>
+          <td class="partial">△ 예상</td>
+          <td class="partial">△ 예상</td>
+          <td class="check">✓ 검증됨</td>
+          <td class="partial">△ 예상</td>
+          <td class="check">✓ 지원</td>
+        </tr>
+        <tr>
+          <td><strong>BYD Sealion 7</strong></td>
+          <td class="partial">△ 예상</td>
+          <td class="partial">△ 예상</td>
+          <td class="partial">△ 예상</td>
+          <td class="partial">△ 예상</td>
+          <td class="no">— (자체 캠핑 모드)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<footer>
+  <strong>BYD Open Ecosystem</strong> — 비공식 서드파티 프로젝트 모음
+  <div class="disclaimer">
+    이 프로젝트들은 BYD 자동차와 무관한 개인/오픈소스 프로젝트입니다.
+    공식 BYD 제품이 아니며, 사용에 따른 모든 책임은 사용자 본인에게 있습니다.
+    차량 제어 기능은 신중하게 사용하세요.
+  </div>
+</footer>
+
+</body>
+</html>
