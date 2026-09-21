@@ -438,11 +438,71 @@
       color: #555;
     }
 
+    /* HAMBURGER */
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      width: 36px;
+      height: 36px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+
+    .nav-hamburger:hover { background: var(--surface2); }
+
+    .nav-hamburger span {
+      display: block;
+      height: 2px;
+      background: var(--text);
+      border-radius: 2px;
+      transition: transform 0.25s, opacity 0.25s;
+    }
+
+    .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+    .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
     /* RESPONSIVE */
     @media (max-width: 640px) {
-      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        gap: 0;
+        background: rgba(10, 10, 10, 0.97);
+        backdrop-filter: blur(16px);
+        border-bottom: 1px solid var(--border);
+        padding: 8px 0;
+        z-index: 99;
+      }
+
+      .nav-links.open { display: flex; }
+
+      .nav-links li { width: 100%; }
+
+      .nav-links a {
+        display: block;
+        padding: 14px 24px;
+        font-size: 1rem;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .nav-links li:last-child a { border-bottom: none; }
+
       .hero { padding: 60px 1.5rem 50px; }
-      .hero-stats { gap: 24px; }
+      .hero-stats { gap: 20px; flex-wrap: wrap; }
+      .hero-stats .stat { min-width: 80px; }
       .grid-wide { grid-template-columns: 1fr; }
       section { padding: 40px 1.5rem; }
     }
@@ -455,14 +515,34 @@
     <span class="byd-badge">BYD</span>
     Third-Party Projects
   </div>
-  <ul class="nav-links">
+  <ul class="nav-links" id="nav-links">
     <li><a href="#apple">Apple</a></li>
     <li><a href="#android">차량 (In-Car)</a></li>
     <li><a href="#multi">멀티 플랫폼</a></li>
     <li><a href="#compat">호환 차종</a></li>
     <li><a href="report.html">제보</a></li>
   </ul>
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="메뉴 열기">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<script>
+  const hamburger = document.getElementById('nav-hamburger');
+  const navLinks = document.getElementById('nav-links');
+
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    navLinks.classList.toggle('open');
+  });
+
+  navLinks.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      hamburger.classList.remove('open');
+      navLinks.classList.remove('open');
+    });
+  });
+</script>
 
 <div class="hero">
   <div class="hero-tag">Unofficial Third-Party Projects</div>
