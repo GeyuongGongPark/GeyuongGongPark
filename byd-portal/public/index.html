@@ -382,6 +382,8 @@
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 28px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     .compat-section h3 {
@@ -392,6 +394,7 @@
 
     table {
       width: 100%;
+      min-width: 480px;
       border-collapse: collapse;
       font-size: 0.88rem;
     }
@@ -405,12 +408,14 @@
       text-transform: uppercase;
       letter-spacing: 0.06em;
       border-bottom: 1px solid var(--border);
+      white-space: nowrap;
     }
 
     td {
       padding: 10px 12px;
       border-bottom: 1px solid var(--border);
       color: var(--text);
+      white-space: nowrap;
     }
 
     tr:last-child td { border-bottom: none; }
@@ -505,6 +510,8 @@
       .hero-stats .stat { min-width: 80px; }
       .grid-wide { grid-template-columns: 1fr; }
       section { padding: 40px 1.5rem; }
+      .compat-section { padding: 16px; }
+      td, th { padding: 8px; font-size: 0.8rem; }
     }
   </style>
 </head>
