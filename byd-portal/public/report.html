@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>제보 — BYD Third-Party Projects</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --byd-red: #E2001A;
+      --byd-red-dark: #b5001a;
+      --bg: #0a0a0a;
+      --surface: #111111;
+      --surface2: #1a1a1a;
+      --border: #222222;
+      --text: #f0f0f0;
+      --text-muted: #888;
+      --radius: 16px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      height: 60px;
+      background: rgba(10, 10, 10, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: -0.02em;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .byd-badge {
+      background: var(--byd-red);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.05em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a.active { color: var(--text); font-weight: 600; }
+
+    /* PAGE HEADER */
+    .page-header {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 60px 2rem 40px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      margin-bottom: 24px;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover { color: var(--text); }
+
+    .page-header h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      margin-bottom: 8px;
+    }
+
+    .page-header p {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+
+    /* MAIN */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem 80px;
+    }
+
+    /* TOOLBAR */
+    .report-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .report-count {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* BUTTONS */
+    .btn-primary {
+      background: var(--byd-red);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 20px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      letter-spacing: -0.01em;
+    }
+
+    .btn-primary:hover { background: var(--byd-red-dark); }
+    .btn-primary:active { transform: scale(0.97); }
+
+    .btn-cancel {
+      background: var(--surface2);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .btn-cancel:hover { color: var(--text); }
+
+    /* REPORT LIST */
+    .report-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .report-empty {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+
+    .report-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px 24px;
+      transition: border-color 0.2s;
+    }
+
+    .report-item:hover { border-color: #333; }
+
+    .report-item-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .report-item-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      letter-spacing: -0.01em;
+    }
+
+    .report-item-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .report-badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 100px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    .report-date {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .report-body {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .report-attachment {
+      margin-top: 12px;
+      font-size: 0.83rem;
+      color: var(--text-muted);
+    }
+
+    /* MODAL */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.active { display: flex; }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 560px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 32px;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+    }
+
+    .modal-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.4rem;
+      cursor: pointer;
+      line-height: 1;
+      padding: 4px;
+      transition: color 0.2s;
+    }
+
+    .modal-close:hover { color: var(--text); }
+
+    /* FORM */
+    .form-group { margin-bottom: 20px; }
+
+    .form-label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .form-label .required { color: var(--byd-red); margin-left: 2px; }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9rem;
+      padding: 12px 14px;
+      transition: border-color 0.2s;
+      outline: none;
+      appearance: none;
+    }
+
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus { border-color: var(--byd-red); }
+
+    .form-select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 36px;
+      cursor: pointer;
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 120px;
+      line-height: 1.6;
+    }
+
+    .file-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface2);
+      border: 1px dashed var(--border);
+      border-radius: 10px;
+      padding: 12px 18px;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .file-label:hover { border-color: var(--byd-red); color: var(--text); }
+
+    .file-input-hidden { display: none; }
+
+    .file-preview {
+      margin-top: 8px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 8px;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 2rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    footer strong { color: var(--text); }
+
+    .disclaimer {
+      max-width: 600px;
+      margin: 12px auto 0;
+      font-size: 0.78rem;
+      line-height: 1.7;
+      color: #555;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .page-header { padding: 40px 1.5rem 28px; }
+      main { padding: 0 1.5rem 60px; }
+      .report-item-header { flex-direction: column; gap: 6px; }
+      .modal { padding: 24px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="index.html">
+    <span class="byd-badge">BYD</span>
+    Third-Party Projects
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html#apple">Apple</a></li>
+    <li><a href="index.html#android">차량 (In-Car)</a></li>
+    <li><a href="index.html#multi">멀티 플랫폼</a></li>
+    <li><a href="index.html#compat">호환 차종</a></li>
+    <li><a href="report.html" class="active">제보</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <a class="back-link" href="index.html">← 메인으로</a>
+  <h1>제보</h1>
+  <p>버그, 오류, 개선 아이디어를 남겨주세요. 다른 사용자의 제보도 확인할 수 있습니다.</p>
+</div>
+
+<main>
+  <div class="report-toolbar">
+    <div class="report-count" id="report-count">0건</div>
+    <button class="btn-primary" id="btn-write">+ 작성하기</button>
+  </div>
+
+  <div class="report-list" id="report-list">
+    <div class="report-empty">아직 제보가 없습니다. 첫 번째 제보를 남겨보세요!</div>
+  </div>
+</main>
+
+<!-- WRITE MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-text">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title-text">제보 작성</div>
+      <button class="modal-close" id="modal-close" aria-label="닫기">✕</button>
+    </div>
+
+    <form id="report-form" novalidate>
+      <div class="form-group">
+        <label class="form-label" for="report-title">제목 <span class="required">*</span></label>
+        <input class="form-input" id="report-title" type="text" placeholder="제보 제목을 입력하세요" maxlength="100" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="app-select">사용 앱 <span class="required">*</span></label>
+        <select class="form-select" id="app-select" required>
+          <option value="" disabled selected>앱을 선택하세요</option>
+          <option value="BYD AutoLock">BYD AutoLock</option>
+          <option value="BYD Watch">BYD Watch</option>
+          <option value="BYD HomeKit">BYD HomeKit</option>
+          <option value="BYD Launcher">BYD Launcher</option>
+          <option value="BYD Status">BYD Status</option>
+          <option value="BYD Camera Recorder">BYD Camera Recorder</option>
+          <option value="BYD Health Monitor">BYD Health Monitor</option>
+        </select>
+      </div>
+
+      <div class="form-group" id="platform-group" style="display:none">
+        <label class="form-label" for="platform-select">발생 플랫폼</label>
+        <select class="form-select" id="platform-select">
+          <option value="" disabled selected>플랫폼을 선택하세요</option>
+          <option value="차량 (DiLink)">차량 (DiLink)</option>
+          <option value="Android">Android</option>
+          <option value="iOS">iOS</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="car-select">차종 <span class="required">*</span></label>
+        <select class="form-select" id="car-select" required>
+          <option value="" disabled selected>차종을 선택하세요</option>
+          <option value="BYD Atto 3">BYD Atto 3</option>
+          <option value="BYD Seal">BYD Seal</option>
+          <option value="BYD Dolphin">BYD Dolphin</option>
+          <option value="BYD Sealion 7">BYD Sealion 7</option>
+          <option value="기타">기타</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="report-body">본문 <span class="required">*</span></label>
+        <textarea class="form-textarea" id="report-body" placeholder="증상, 재현 방법, 발생 상황 등을 자세히 적어주세요." maxlength="2000" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">첨부 파일</label>
+        <label class="file-label" for="file-input">
+          <span>📎</span> 파일 선택 (.log .txt .png .jpeg .jpg · 최대 2MB)
+        </label>
+        <input class="file-input-hidden" id="file-input" type="file" accept=".log,.txt,.png,.jpeg,.jpg">
+        <div class="file-preview" id="file-preview"></div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-cancel" id="btn-cancel">취소</button>
+        <button type="submit" class="btn-primary">제출하기</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <strong>BYD Third-Party Projects</strong> — 비공식 서드파티 프로젝트 모음
+  <div class="disclaimer">
+    이 프로젝트들은 BYD 자동차와 무관한 개인/오픈소스 프로젝트입니다.
+    공식 BYD 제품이 아니며, 사용에 따른 모든 책임은 사용자 본인에게 있습니다.
+    차량 제어 기능은 신중하게 사용하세요.
+  </div>
+  <div class="disclaimer" style="margin-top: 8px;">
+    문의: <a href="mailto:parksilvester@gmail.com" style="color: #666; text-decoration: none;">parksilvester@gmail.com</a>
+  </div>
+</footer>
+
+<script>
+  const MULTI_APPS = ['BYD Status', 'BYD Camera Recorder', 'BYD Health Monitor'];
+
+  function escapeHtml(str) {
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  async function fetchReports() {
+    const container = document.getElementById('report-list');
+    container.innerHTML = '<div class="report-empty">불러오는 중...</div>';
+    try {
+      const res = await fetch('/api/reports');
+      if (!res.ok) throw new Error();
+      const reports = await res.json();
+      renderReports(reports);
+    } catch {
+      container.innerHTML = '<div class="report-empty">제보를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.</div>';
+    }
+  }
+
+  function renderReports(reports) {
+    const container = document.getElementById('report-list');
+    document.getElementById('report-count').textContent = `${reports.length}건`;
+
+    if (reports.length === 0) {
+      container.innerHTML = '<div class="report-empty">아직 제보가 없습니다. 첫 번째 제보를 남겨보세요!</div>';
+      return;
+    }
+
+    container.innerHTML = reports.map(r => {
+      const date = new Date(r.created_at).toLocaleString('ko-KR', {
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit'
+      });
+
+      let fileHtml = '';
+      if (r.file_data && r.file_type && r.file_type.startsWith('image/')) {
+        fileHtml = `<div class="report-attachment"><img src="${r.file_data}" alt="${escapeHtml(r.file_name)}" style="max-width:220px;max-height:160px;border-radius:8px;margin-top:8px;display:block;"></div>`;
+      } else if (r.file_name) {
+        fileHtml = `<div class="report-attachment">📎 ${escapeHtml(r.file_name)}</div>`;
+      }
+
+      const platformBadge = r.platform ? `<span class="report-badge">${escapeHtml(r.platform)}</span>` : '';
+
+      return `
+        <div class="report-item">
+          <div class="report-item-header">
+            <div>
+              <div class="report-item-title">${escapeHtml(r.title)}</div>
+              <div class="report-item-meta">
+                <span class="report-badge">${escapeHtml(r.app)}</span>
+                ${platformBadge}
+                <span class="report-badge">${escapeHtml(r.car)}</span>
+              </div>
+            </div>
+            <div class="report-date">${date}</div>
+          </div>
+          <div class="report-body">${escapeHtml(r.body)}</div>
+          ${fileHtml}
+        </div>
+      `;
+    }).join('');
+  }
+
+  function openModal() {
+    document.getElementById('modal-overlay').classList.add('active');
+    document.getElementById('report-title').focus();
+  }
+
+  function closeModal() {
+    document.getElementById('modal-overlay').classList.remove('active');
+    document.getElementById('report-form').reset();
+    document.getElementById('platform-group').style.display = 'none';
+    document.getElementById('file-preview').textContent = '';
+  }
+
+  document.getElementById('btn-write').addEventListener('click', openModal);
+  document.getElementById('modal-close').addEventListener('click', closeModal);
+  document.getElementById('btn-cancel').addEventListener('click', closeModal);
+
+  document.getElementById('modal-overlay').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeModal();
+  });
+
+  document.getElementById('app-select').addEventListener('change', function() {
+    const pg = document.getElementById('platform-group');
+    pg.style.display = MULTI_APPS.includes(this.value) ? 'block' : 'none';
+    if (!MULTI_APPS.includes(this.value)) {
+      document.getElementById('platform-select').value = '';
+    }
+  });
+
+  document.getElementById('file-input').addEventListener('change', function() {
+    const preview = document.getElementById('file-preview');
+    const file = this.files[0];
+    if (!file) { preview.textContent = ''; return; }
+    if (file.size > 2 * 1024 * 1024) {
+      preview.textContent = '파일이 너무 큽니다 (최대 2MB)';
+      this.value = '';
+      return;
+    }
+    preview.textContent = `📎 ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+  });
+
+  document.getElementById('report-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const title = document.getElementById('report-title').value.trim();
+    const app = document.getElementById('app-select').value;
+    const platformVisible = document.getElementById('platform-group').style.display !== 'none';
+    const platform = platformVisible ? document.getElementById('platform-select').value || null : null;
+    const car = document.getElementById('car-select').value;
+    const body = document.getElementById('report-body').value.trim();
+    const fileInput = document.getElementById('file-input');
+    const submitBtn = this.querySelector('[type="submit"]');
+
+    if (!title || !app || !car || !body) {
+      alert('제목, 사용 앱, 차종, 본문은 필수입니다.');
+      return;
+    }
+
+    const buildPayload = (fileData) => ({
+      title, app, platform, car, body,
+      file_name: fileData?.name || null,
+      file_type: fileData?.type || null,
+      file_data: fileData?.data || null,
+    });
+
+    const submit = async (payload) => {
+      submitBtn.disabled = true;
+      submitBtn.textContent = '제출 중...';
+      try {
+        const res = await fetch('/api/reports', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) throw new Error();
+        closeModal();
+        fetchReports();
+      } catch {
+        alert('제출에 실패했습니다. 잠시 후 다시 시도해주세요.');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = '제출하기';
+      }
+    };
+
+    const file = fileInput.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (ev) => submit(buildPayload({ name: file.name, type: file.type, data: ev.target.result }));
+      reader.readAsDataURL(file);
+    } else {
+      submit(buildPayload(null));
+    }
+  });
+
+  fetchReports();
+</script>
+</body>
+</html>
