@@ -392,6 +392,101 @@
       color: #555;
     }
 
+    /* COMMENTS */
+    .comment-section {
+      margin-top: 16px;
+      border-top: 1px solid var(--border);
+      padding-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .comment-item {
+      background: var(--surface2);
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+
+    .comment-body {
+      font-size: 0.88rem;
+      line-height: 1.65;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .comment-date {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    .comment-form {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .comment-input {
+      flex: 1;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.88rem;
+      padding: 9px 12px;
+      outline: none;
+      resize: none;
+      line-height: 1.5;
+      min-height: 38px;
+      max-height: 120px;
+      transition: border-color 0.2s;
+    }
+
+    .comment-input:focus { border-color: var(--byd-red); }
+
+    .btn-comment-submit {
+      background: var(--byd-red);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0 16px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+      white-space: nowrap;
+      align-self: flex-end;
+      height: 38px;
+    }
+
+    .btn-comment-submit:hover { background: var(--byd-red-dark); }
+    .btn-comment-submit:disabled { opacity: 0.5; cursor: default; }
+
+    .btn-admin-login {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 0;
+      transition: color 0.2s;
+    }
+
+    .btn-admin-login:hover { color: var(--text); }
+
+    /* ADMIN LOGIN MODAL */
+    .login-modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 360px;
+      padding: 28px;
+    }
+
     /* RESPONSIVE */
     @media (max-width: 640px) {
       .nav-links { display: none; }
@@ -434,6 +529,25 @@
     <div class="report-empty">아직 제보가 없습니다. 첫 번째 제보를 남겨보세요!</div>
   </div>
 </main>
+
+<!-- ADMIN LOGIN MODAL -->
+<div class="modal-overlay" id="login-overlay">
+  <div class="login-modal" role="dialog" aria-modal="true">
+    <div class="modal-header">
+      <div class="modal-title">관리자 로그인</div>
+      <button class="modal-close" id="login-close" aria-label="닫기">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="admin-password">비밀번호</label>
+      <input class="form-input" id="admin-password" type="password" placeholder="비밀번호를 입력하세요" autocomplete="current-password">
+      <div style="margin-top:6px;font-size:0.78rem;color:var(--byd-red);min-height:18px" id="login-error"></div>
+    </div>
+    <div class="form-actions">
+      <button type="button" class="btn-cancel" id="login-cancel">취소</button>
+      <button type="button" class="btn-primary" id="login-submit">로그인</button>
+    </div>
+  </div>
+</div>
 
 <!-- WRITE MODAL -->
 <div class="modal-overlay" id="modal-overlay">
@@ -522,20 +636,33 @@
 <script>
   const MULTI_APPS = ['BYD Status', 'BYD Camera Recorder', 'BYD Health Monitor'];
 
+  // ── 관리자 토큰 ──────────────────────────────
+  function getToken() { return sessionStorage.getItem('admin_token'); }
+  function setToken(t) { sessionStorage.setItem('admin_token', t); }
+  function isAdmin() { return !!getToken(); }
+
+  // ── 유틸 ─────────────────────────────────────
   function escapeHtml(str) {
     const d = document.createElement('div');
     d.textContent = str;
     return d.innerHTML;
   }
 
+  function formatDate(iso) {
+    return new Date(iso).toLocaleString('ko-KR', {
+      year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit'
+    });
+  }
+
+  // ── 제보 목록 ─────────────────────────────────
   async function fetchReports() {
     const container = document.getElementById('report-list');
     container.innerHTML = '<div class="report-empty">불러오는 중...</div>';
     try {
       const res = await fetch('/api/reports');
       if (!res.ok) throw new Error();
-      const reports = await res.json();
-      renderReports(reports);
+      renderReports(await res.json());
     } catch {
       container.innerHTML = '<div class="report-empty">제보를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.</div>';
     }
@@ -551,11 +678,6 @@
     }
 
     container.innerHTML = reports.map(r => {
-      const date = new Date(r.created_at).toLocaleString('ko-KR', {
-        year: 'numeric', month: '2-digit', day: '2-digit',
-        hour: '2-digit', minute: '2-digit'
-      });
-
       let fileHtml = '';
       if (r.file_data && r.file_type && r.file_type.startsWith('image/')) {
         fileHtml = `<div class="report-attachment"><img src="${r.file_data}" alt="${escapeHtml(r.file_name)}" style="max-width:220px;max-height:160px;border-radius:8px;margin-top:8px;display:block;"></div>`;
@@ -565,8 +687,22 @@
 
       const platformBadge = r.platform ? `<span class="report-badge">${escapeHtml(r.platform)}</span>` : '';
 
+      const commentsHtml = (r.comments || []).map(c => `
+        <div class="comment-item">
+          <div class="comment-body">${escapeHtml(c.body)}</div>
+          <div class="comment-date">${formatDate(c.created_at)}</div>
+        </div>
+      `).join('');
+
+      const commentFormHtml = isAdmin()
+        ? `<div class="comment-form">
+             <textarea class="comment-input" placeholder="댓글을 입력하세요" rows="1" data-report-id="${r.id}"></textarea>
+             <button class="btn-comment-submit" data-report-id="${r.id}">등록</button>
+           </div>`
+        : `<button class="btn-admin-login" data-report-id="${r.id}">관리자로 로그인하여 댓글 달기</button>`;
+
       return `
-        <div class="report-item">
+        <div class="report-item" id="report-${r.id}">
           <div class="report-item-header">
             <div>
               <div class="report-item-title">${escapeHtml(r.title)}</div>
@@ -576,15 +712,123 @@
                 <span class="report-badge">${escapeHtml(r.car)}</span>
               </div>
             </div>
-            <div class="report-date">${date}</div>
+            <div class="report-date">${formatDate(r.created_at)}</div>
           </div>
           <div class="report-body">${escapeHtml(r.body)}</div>
           ${fileHtml}
+          <div class="comment-section">
+            ${commentsHtml}
+            ${commentFormHtml}
+          </div>
         </div>
       `;
     }).join('');
+
+    // 댓글 등록 버튼
+    document.querySelectorAll('.btn-comment-submit').forEach(btn => {
+      btn.addEventListener('click', submitComment);
+    });
+
+    // 관리자 로그인 유도 버튼
+    document.querySelectorAll('.btn-admin-login').forEach(btn => {
+      btn.addEventListener('click', () => openLoginModal());
+    });
+
+    // textarea auto-resize
+    document.querySelectorAll('.comment-input').forEach(ta => {
+      ta.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = this.scrollHeight + 'px';
+      });
+      ta.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+          const btn = document.querySelector(`.btn-comment-submit[data-report-id="${this.dataset.reportId}"]`);
+          if (btn) btn.click();
+        }
+      });
+    });
   }
 
+  async function submitComment(e) {
+    const btn = e.currentTarget;
+    const reportId = btn.dataset.reportId;
+    const textarea = document.querySelector(`.comment-input[data-report-id="${reportId}"]`);
+    const body = textarea.value.trim();
+    if (!body) return;
+
+    btn.disabled = true;
+    try {
+      const res = await fetch(`/api/reports/${reportId}/comments`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getToken()}`,
+        },
+        body: JSON.stringify({ body }),
+      });
+      if (res.status === 401) {
+        sessionStorage.removeItem('admin_token');
+        alert('세션이 만료됐습니다. 다시 로그인해주세요.');
+        fetchReports();
+        return;
+      }
+      if (!res.ok) throw new Error();
+      textarea.value = '';
+      textarea.style.height = 'auto';
+      fetchReports();
+    } catch {
+      alert('댓글 등록에 실패했습니다.');
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  // ── 관리자 로그인 모달 ────────────────────────
+  function openLoginModal() {
+    document.getElementById('login-overlay').classList.add('active');
+    document.getElementById('admin-password').focus();
+    document.getElementById('login-error').textContent = '';
+  }
+
+  function closeLoginModal() {
+    document.getElementById('login-overlay').classList.remove('active');
+    document.getElementById('admin-password').value = '';
+    document.getElementById('login-error').textContent = '';
+  }
+
+  document.getElementById('login-close').addEventListener('click', closeLoginModal);
+  document.getElementById('login-cancel').addEventListener('click', closeLoginModal);
+  document.getElementById('login-overlay').addEventListener('click', function(e) {
+    if (e.target === this) closeLoginModal();
+  });
+
+  document.getElementById('admin-password').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') document.getElementById('login-submit').click();
+  });
+
+  document.getElementById('login-submit').addEventListener('click', async function() {
+    const password = document.getElementById('admin-password').value;
+    const errorEl = document.getElementById('login-error');
+    this.disabled = true;
+    try {
+      const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+      });
+      const data = await res.json();
+      if (!res.ok) { errorEl.textContent = data.error || '로그인 실패'; return; }
+      setToken(data.token);
+      closeLoginModal();
+      fetchReports();
+    } catch {
+      errorEl.textContent = '서버 오류가 발생했습니다.';
+    } finally {
+      this.disabled = false;
+    }
+  });
+
+  // ── 제보 작성 모달 ────────────────────────────
   function openModal() {
     document.getElementById('modal-overlay').classList.add('active');
     document.getElementById('report-title').focus();
@@ -606,7 +850,10 @@
   });
 
   document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') closeModal();
+    if (e.key === 'Escape') {
+      closeModal();
+      closeLoginModal();
+    }
   });
 
   document.getElementById('app-select').addEventListener('change', function() {
