@@ -163,12 +163,12 @@
     /* GRID */
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      grid-template-columns: repeat(3, 1fr);
       gap: 20px;
     }
 
-    .grid-wide {
-      grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: repeat(2, 1fr); }
     }
 
     /* CARD */
@@ -508,7 +508,7 @@
       .hero { padding: 60px 1.5rem 50px; }
       .hero-stats { gap: 20px; flex-wrap: wrap; }
       .hero-stats .stat { min-width: 80px; }
-      .grid-wide { grid-template-columns: 1fr; }
+      .grid { grid-template-columns: 1fr; }
       section { padding: 40px 1.5rem; }
       .compat-section { padding: 16px; }
       td, th { padding: 8px; font-size: 0.8rem; }
@@ -585,7 +585,7 @@
     <p>iPhone, Apple Watch, HomeKit, 위젯까지 — iOS 전반을 커버합니다.</p>
   </div>
 
-  <div class="grid grid-wide" style="margin-bottom: 20px;">
+  <div class="grid">
 
     <div class="card">
       <div class="card-icon"><img src="https://raw.githubusercontent.com/GeyuongGongPark/BydAutoLock-iOS/main/BydAutoLock/Assets.xcassets/AppIcon.appiconset/AppIcon_1024.png" alt="BYD AutoLock"></div>
@@ -648,10 +648,6 @@
         </div>
       </div>
     </div>
-
-  </div>
-
-  <div class="grid">
 
     <div class="card">
       <div class="card-icon"><img src="https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/c1/e3/59/c1e35951-3630-2045-00da-2946295696c4/homeCalistoga-0-0-1x_U007epad-0-1-0-85-220.png/512x512bb.jpg" alt="Apple Home"></div>
