@@ -95,6 +95,7 @@ app.get('/api/reports', async (req, res) => {
 app.post('/api/reports', async (req, res) => {
   try {
     const { title, app, platform, car, body, file_name, file_type, file_data } = req.body;
+    console.log('[POST /api/reports] file_name:', file_name, '| file_type:', file_type, '| file_data length:', file_data?.length ?? 'null');
     if (!title || !app || !car || !body) {
       return res.status(400).json({ error: '필수 항목 누락' });
     }
