@@ -8,6 +8,45 @@ const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin';
 
+// ─── Slack / Friday 연동 ──────────────────────────────────────────────────────
+const SLACK_BOT_TOKEN    = process.env.SLACK_BOT_TOKEN;
+const SLACK_CHANNEL_ID   = process.env.SLACK_CHANNEL_ID;
+const SLACK_FRIDAY_USER_ID = process.env.SLACK_FRIDAY_USER_ID;
+
+const APP_REPO_MAP = {
+  'BYD AutoLock':         'BydAutoLock-iOS',
+  'BYD Watch':            'BYD_Watch',
+  'BYD HomeKit':          'BYD-Apple-Homekit',
+  'BYD Launcher':         'BYDLauncher',
+  'BYD Status':           'BYDstatus',
+  'BYD Camera Recorder':  'BYDCameraRecorder',
+  'BYD Health Monitor':   'BYD-Health-Monitor',
+};
+
+async function notifyFriday(report) {
+  if (!SLACK_BOT_TOKEN || !SLACK_CHANNEL_ID || !SLACK_FRIDAY_USER_ID) return;
+
+  const repo = APP_REPO_MAP[report.app];
+  if (!repo) return;
+
+  const lines = [
+    `<@${SLACK_FRIDAY_USER_ID}> [repo:${repo}] 신규 제보 #${report.id}: ${report.title}`,
+    `> 앱: ${report.app}`,
+    report.platform ? `> 플랫폼: ${report.platform}` : null,
+    `> 차종: ${report.car}`,
+    `> 내용: ${report.body.slice(0, 500)}`,
+  ].filter(Boolean).join('\n');
+
+  await fetch('https://slack.com/api/chat.postMessage', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${SLACK_BOT_TOKEN}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ channel: SLACK_CHANNEL_ID, text: lines }),
+  }).catch(e => console.error('[friday] Slack 알림 실패:', e.message));
+}
+
 // DB
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -103,7 +142,9 @@ if (!title || !app || !car || !body) {
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
       [title, app, platform || null, car, body, file_name || null, file_type || null, file_data || null]
     );
-    res.status(201).json({ ...rows[0], comments: [] });
+    const report = { ...rows[0], comments: [] };
+    res.status(201).json(report);
+    notifyFriday(report); // 비동기 — 응답 지연 없음
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'DB 오류' });
