@@ -756,10 +756,17 @@
 
     container.innerHTML = reports.map(r => {
       let fileHtml = '';
-      if (r.file_data && r.file_type && r.file_type.startsWith('image/')) {
-        fileHtml = `<div class="report-attachment"><img src="${r.file_data}" alt="${escapeHtml(r.file_name)}" style="max-width:220px;max-height:160px;border-radius:8px;margin-top:8px;display:block;"></div>`;
-      } else if (r.file_name) {
-        fileHtml = `<div class="report-attachment">📎 ${escapeHtml(r.file_name)}</div>`;
+      if (r.file_data && r.file_name) {
+        if (r.file_type && r.file_type.startsWith('image/')) {
+          fileHtml = `<div class="report-attachment">
+            <img src="${r.file_data}" alt="${escapeHtml(r.file_name)}" style="max-width:220px;max-height:160px;border-radius:8px;margin-top:8px;display:block;">
+            <a href="${r.file_data}" download="${escapeHtml(r.file_name)}" style="display:inline-block;margin-top:6px;font-size:0.78rem;color:var(--byd-red);text-decoration:none;">⬇ 다운로드</a>
+          </div>`;
+        } else {
+          fileHtml = `<div class="report-attachment">
+            <a href="${r.file_data}" download="${escapeHtml(r.file_name)}" style="color:var(--text-muted);text-decoration:none;font-size:0.83rem;">📎 ${escapeHtml(r.file_name)}</a>
+          </div>`;
+        }
       }
 
       const platformBadge = r.platform ? `<span class="report-badge">${escapeHtml(r.platform)}</span>` : '';
