@@ -7,6 +7,8 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin';
+const CAFE_API_KEY = process.env.CAFE_API_KEY;
+const CAFE_API_BASE = 'https://byd.cseini.co.kr';
 
 // ─── Slack / Friday 연동 ──────────────────────────────────────────────────────
 const SLACK_BOT_TOKEN    = process.env.SLACK_BOT_TOKEN;
@@ -76,6 +78,8 @@ async function initDb() {
       created_at TIMESTAMPTZ DEFAULT NOW()
     )
   `);
+  await pool.query(`ALTER TABLE reports ADD COLUMN IF NOT EXISTS nickname TEXT`);
+  await pool.query(`ALTER TABLE reports ADD COLUMN IF NOT EXISTS grade TEXT`);
 }
 
 // Middleware
@@ -94,6 +98,27 @@ function verifyAdmin(req, res, next) {
     res.status(401).json({ error: '토큰 만료 또는 유효하지 않음' });
   }
 }
+
+// API — 카페 회원 등급 프록시
+app.get('/api/cafe/verify-member', async (req, res) => {
+  const { nickname } = req.query;
+  if (!nickname || !nickname.trim()) {
+    return res.status(400).json({ error: '닉네임을 입력해주세요' });
+  }
+  if (!CAFE_API_KEY) {
+    return res.status(503).json({ error: '카페 API 키가 설정되지 않았습니다' });
+  }
+  try {
+    const r = await fetch(`${CAFE_API_BASE}/cafe/member?nickname=${encodeURIComponent(nickname.trim())}`, {
+      headers: { 'X-Cafe-Key': CAFE_API_KEY },
+    });
+    const data = await r.json();
+    res.status(r.status).json(data);
+  } catch (e) {
+    console.error('[cafe] 카페 API 오류:', e.message);
+    res.status(502).json({ error: '카페 API에 연결할 수 없습니다' });
+  }
+});
 
 // API — 관리자 로그인
 app.post('/api/admin/login', (req, res) => {
@@ -133,14 +158,14 @@ app.get('/api/reports', async (req, res) => {
 // API — 제보 저장
 app.post('/api/reports', async (req, res) => {
   try {
-    const { title, app, platform, car, body, file_name, file_type, file_data } = req.body;
-if (!title || !app || !car || !body) {
+    const { title, app, platform, car, body, file_name, file_type, file_data, nickname, grade } = req.body;
+    if (!title || !app || !car || !body) {
       return res.status(400).json({ error: '필수 항목 누락' });
     }
     const { rows } = await pool.query(
-      `INSERT INTO reports (title, app, platform, car, body, file_name, file_type, file_data)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
-      [title, app, platform || null, car, body, file_name || null, file_type || null, file_data || null]
+      `INSERT INTO reports (title, app, platform, car, body, file_name, file_type, file_data, nickname, grade)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`,
+      [title, app, platform || null, car, body, file_name || null, file_type || null, file_data || null, nickname || null, grade || null]
     );
     const report = { ...rows[0], comments: [] };
     res.status(201).json(report);

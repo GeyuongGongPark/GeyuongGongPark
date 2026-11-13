@@ -242,6 +242,27 @@
       color: var(--text-muted);
     }
 
+    /* GRADE BADGE */
+    .grade-badge {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 100px;
+      border: 1px solid;
+    }
+    .grade-manager  { color: #E2001A; border-color: rgba(226,0,26,0.4); background: rgba(226,0,26,0.1); }
+    .grade-regular  { color: #4ade80; border-color: rgba(74,222,128,0.35); background: rgba(74,222,128,0.08); }
+    .grade-default  { color: var(--text-muted); border-color: var(--border); background: var(--surface2); }
+
+    .nickname-status {
+      margin-top: 7px;
+      font-size: 0.8rem;
+      min-height: 18px;
+    }
+    .nickname-status.ok   { color: #4ade80; }
+    .nickname-status.err  { color: var(--byd-red); }
+    .nickname-status.info { color: var(--text-muted); }
+
     /* MODAL */
     .modal-overlay {
       display: none;
@@ -636,6 +657,12 @@
 
     <form id="report-form" novalidate>
       <div class="form-group">
+        <label class="form-label" for="report-nickname">BYD 오너스 랩 닉네임 <span class="required">*</span></label>
+        <input class="form-input" id="report-nickname" type="text" placeholder="카페 닉네임을 입력하세요" maxlength="50" autocomplete="off">
+        <div class="nickname-status info" id="nickname-status">정회원 이상만 작성할 수 있습니다.</div>
+      </div>
+
+      <div class="form-group">
         <label class="form-label" for="report-title">제목 <span class="required">*</span></label>
         <input class="form-input" id="report-title" type="text" placeholder="제보 제목을 입력하세요" maxlength="100" required>
       </div>
@@ -713,6 +740,57 @@
 <script>
   const MULTI_APPS = ['BYD Status', 'BYD Camera Recorder', 'BYD Health Monitor'];
 
+  // ── 카페 닉네임 검증 ──────────────────────────────
+  let verifiedNickname = null;
+  let verifiedGrade = null;
+  let nicknameVerifyTimer = null;
+
+  document.getElementById('report-nickname').addEventListener('input', function() {
+    verifiedNickname = null;
+    verifiedGrade = null;
+    const statusEl = document.getElementById('nickname-status');
+    clearTimeout(nicknameVerifyTimer);
+
+    const val = this.value.trim();
+    if (!val) {
+      statusEl.className = 'nickname-status info';
+      statusEl.textContent = '정회원 이상만 작성할 수 있습니다.';
+      return;
+    }
+
+    statusEl.className = 'nickname-status info';
+    statusEl.textContent = '확인 중...';
+
+    nicknameVerifyTimer = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/cafe/verify-member?nickname=${encodeURIComponent(val)}`);
+        const data = await res.json();
+        if (!res.ok) {
+          statusEl.className = 'nickname-status err';
+          statusEl.textContent = data.error || '확인 실패';
+          return;
+        }
+        if (!data.found) {
+          statusEl.className = 'nickname-status err';
+          statusEl.textContent = '카페에서 찾을 수 없는 닉네임입니다.';
+          return;
+        }
+        if (!data.isRegularOrAbove) {
+          statusEl.className = 'nickname-status err';
+          statusEl.textContent = `현재 등급(${data.grade || '준회원 이하'})은 작성 권한이 없습니다.`;
+          return;
+        }
+        verifiedNickname = val;
+        verifiedGrade = data.grade || null;
+        statusEl.className = 'nickname-status ok';
+        statusEl.textContent = `인증됨 — ${data.grade || '정회원'}`;
+      } catch {
+        statusEl.className = 'nickname-status err';
+        statusEl.textContent = '네트워크 오류가 발생했습니다.';
+      }
+    }, 600);
+  });
+
   // ── 관리자 토큰 ──────────────────────────────
   function getToken() { return sessionStorage.getItem('admin_token'); }
   function setToken(t) { sessionStorage.setItem('admin_token', t); }
@@ -771,6 +849,16 @@
 
       const platformBadge = r.platform ? `<span class="report-badge">${escapeHtml(r.platform)}</span>` : '';
 
+      let gradeCls = 'grade-default';
+      if (r.grade) {
+        const g = r.grade;
+        if (g.includes('매니저') || g.includes('운영') || g.includes('스태프')) gradeCls = 'grade-manager';
+        else if (g.includes('정회원') || g.includes('우수') || g.includes('열정')) gradeCls = 'grade-regular';
+      }
+      const nicknameBadge = r.nickname
+        ? `<span class="grade-badge ${gradeCls}">${escapeHtml(r.nickname)}${r.grade ? ' · ' + escapeHtml(r.grade) : ''}</span>`
+        : '';
+
       const commentsHtml = (r.comments || []).map(c => `
         <div class="comment-item">
           <div class="comment-body">${escapeHtml(c.body)}</div>
@@ -791,6 +879,7 @@
             <div>
               <div class="report-item-title">${escapeHtml(r.title)}</div>
               <div class="report-item-meta">
+                ${nicknameBadge}
                 <span class="report-badge">${escapeHtml(r.app)}</span>
                 ${platformBadge}
                 <span class="report-badge">${escapeHtml(r.car)}</span>
@@ -923,6 +1012,12 @@
     document.getElementById('report-form').reset();
     document.getElementById('platform-group').style.display = 'none';
     document.getElementById('file-preview').textContent = '';
+    verifiedNickname = null;
+    verifiedGrade = null;
+    clearTimeout(nicknameVerifyTimer);
+    const statusEl = document.getElementById('nickname-status');
+    statusEl.className = 'nickname-status info';
+    statusEl.textContent = '정회원 이상만 작성할 수 있습니다.';
   }
 
   document.getElementById('btn-write').addEventListener('click', openModal);
@@ -972,6 +1067,12 @@
     const fileInput = document.getElementById('file-input');
     const submitBtn = this.querySelector('[type="submit"]');
 
+    if (!verifiedNickname) {
+      alert('카페 닉네임 인증이 필요합니다. 정회원 이상의 닉네임을 입력하고 인증을 기다려주세요.');
+      document.getElementById('report-nickname').focus();
+      return;
+    }
+
     if (!title || !app || !car || !body) {
       alert('제목, 사용 앱, 차종, 본문은 필수입니다.');
       return;
@@ -979,6 +1080,8 @@
 
     const buildPayload = (fileData) => ({
       title, app, platform, car, body,
+      nickname: verifiedNickname,
+      grade: verifiedGrade,
       file_name: fileData?.name || null,
       file_type: fileData?.type || null,
       file_data: fileData?.data || null,
