@@ -1,4 +1,4 @@
-[![Header](https://capsule-render.vercel.app/api?type=waving&height=200&color=gradient&section=header&text=Hi%20👋,%20I'm%20GeyuongGongPark&fontSize=42&fontAlignY=35)](https://github.com/GeyuongGongPark)
+[![Header](https://capsule-render.vercel.app/api?type=waving&height=200&color=gradient&section=header&text=Hi%20👋,%20I'm%20GyeongGongPark&fontSize=42&fontAlignY=35)](https://github.com/GeyuongGongPark)
 
 ## About Me
 
